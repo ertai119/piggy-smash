@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ART_SIZE } from '../art/textures';
 import { boldText, button, gameLayout } from '../display';
+import { unlock } from '../fx/sound';
 import { getSave } from '../game/state';
 
 export class TitleScene extends Phaser.Scene {
@@ -36,6 +37,7 @@ export class TitleScene extends Phaser.Scene {
   }
 
   private startGame(): void {
+    unlock();
     if (this.scene.get('play')) this.scene.start('play', { stage: getSave().stage });
   }
 }

@@ -1,7 +1,10 @@
 import Phaser from 'phaser';
 import { ART_SIZE } from '../art/textures';
 import { boldText, gameLayout } from '../display';
-import { getSave } from '../game/state';
+import { bump, breakPig as breakFx, coinBurstToCounter, damageNumber, hitFlash, impactBurst, lightning, resetEffects, shake, swingHammer } from '../fx/effects';
+import { vibrate } from '../fx/haptics';
+import { isMuted, play, setMuted } from '../fx/sound';
+import { getSave, setSave } from '../game/state';
 import { stageConfig, type PigKind } from '../logic/balance';
 import { resolveTap, SwingGate, type TapResult, type Target } from '../logic/combat';
 import { formatNumber } from '../logic/format';
@@ -43,6 +46,8 @@ export class PlayScene extends Phaser.Scene {
   protected shownCoins = 0;
 
   private nextId = 1;
+  /** 방금 깨진 저금통 위치(같은 터치의 숫자·번개 연출용) */
+  private lastBroken = new Map<number, { x: number; y: number }>();
   private gate!: SwingGate;
   private ending = false;
   private bg!: Phaser.GameObjects.Image;
@@ -54,6 +59,7 @@ export class PlayScene extends Phaser.Scene {
   protected hudCoinIcon!: Phaser.GameObjects.Image;
   private hudRemain!: Phaser.GameObjects.Text;
   private hudProgress!: Phaser.GameObjects.Graphics;
+  private hudMute!: Phaser.GameObjects.Text;
 
   constructor() {
     super('play');
@@ -61,6 +67,7 @@ export class PlayScene extends Phaser.Scene {
 
   create(data: { stage: number }): void {
     this.pigs.clear();
+    this.lastBroken.clear();
     this.nextId = 1;
     this.shownCoins = 0;
     this.ending = false;
@@ -86,6 +93,7 @@ export class PlayScene extends Phaser.Scene {
     };
     document.addEventListener('visibilitychange', onVisibility);
     this.events.once('shutdown', () => {
+      resetEffects();
       this.scale.off('resize', onResize);
       document.removeEventListener('visibilitychange', onVisibility);
       this.input.off('pointerdown', this.onPointerDown, this);
@@ -101,12 +109,57 @@ export class PlayScene extends Phaser.Scene {
     if (this.run.status !== 'playing') this.finish();
   }
 
-  // ---- 연출 훅 (Task 10에서 채운다) ----
-  protected onSwing(_tap: { x: number; y: number }): void {}
-  protected onHitResolved(_result: TapResult, _tap: { x: number; y: number }): void {}
+  // ---- 연출 ----
+  protected onSwing(tap: { x: number; y: number }): void {
+    swingHammer(this, tap, this.L.unit, Math.min(110, this.stats.minIntervalMs * 0.6));
+    play('swing');
+  }
+
+  protected onHitResolved(result: TapResult, tap: { x: number; y: number }): void {
+    if (result.hits.length === 0) return;
+    const u = this.L.unit;
+    // 망치가 닿는 순간에 맞춰 반응
+    this.time.delayedCall(Math.min(110, this.stats.minIntervalMs * 0.6) * 0.8, () => {
+      impactBurst(this, tap, u, result.crit);
+      for (const h of result.hits) {
+        const p = this.pigs.get(h.id);
+        const at = p ?? this.lastBroken.get(h.id);
+        if (p) hitFlash(this, p.sprite);
+        if (at) damageNumber(this, at, h.damage, h.crit, u);
+      }
+      for (const c of result.chain) {
+        const a = this.pigs.get(c.from) ?? this.lastBroken.get(c.from);
+        const b = this.pigs.get(c.to) ?? this.lastBroken.get(c.to);
+        if (a && b) lightning(this, a, b, u);
+      }
+      if (result.chain.length > 0) play('zap');
+      if (result.crit) {
+        play('crit');
+        shake(this, 160, 0.008);
+        vibrate(35);
+      } else {
+        play('hit');
+      }
+    });
+  }
+
   /** 동전 연출이 끝나면 addShownCoins를 불러야 한다. */
-  protected onPigBroken(_pig: Pig, coins: number): void {
-    this.addShownCoins(coins);
+  protected onPigBroken(pig: Pig, coins: number): void {
+    const u = this.L.unit;
+    const gold = pig.kind === 'gold';
+    this.lastBroken.set(pig.id, { x: pig.x, y: pig.y });
+    this.time.delayedCall(Math.min(110, this.stats.minIntervalMs * 0.6) * 0.8, () => {
+      breakFx(this, pig, gold, u);
+      play('break');
+      shake(this, 100, 0.004);
+      vibrate(gold ? 60 : 20);
+      const visual = gold ? Phaser.Math.Between(14, 18) : Phaser.Math.Between(4, 6);
+      coinBurstToCounter(this, pig, visual, coins, () => ({ x: this.hudCoinIcon.x, y: this.hudCoinIcon.y }), u, (value) => {
+        this.addShownCoins(value);
+        bump(this, this.hudCoinIcon);
+        play('coin');
+      });
+    });
   }
 
   protected addShownCoins(n: number): void {
@@ -130,6 +183,7 @@ export class PlayScene extends Phaser.Scene {
     const sprite = this.add.image(x, y, key).setDisplaySize(size, size).setDepth(req.kind === 'gold' ? 3 : 2);
     const pig: Pig = { id: this.nextId++, kind: req.kind, hp: req.hp, maxHp: req.hp, x, y, vx: Math.cos(dir) * speed, vy: Math.sin(dir) * speed, sprite };
     sprite.setFlipX(pig.vx < 0);
+    sprite.setData('sx', sprite.scaleX).setData('sy', sprite.scaleY);
     if (popIn) {
       const sx = sprite.scaleX, sy = sprite.scaleY;
       sprite.setScale(0);
@@ -243,8 +297,10 @@ export class PlayScene extends Phaser.Scene {
     this.hudCoins = boldText(this, xs[2] + ws[2] / 2 + 10 * u, cy, '', u, 16, '#ffca28');
     this.hudProgress = this.add.graphics();
     this.hudRemain = boldText(this, W / 2, y0 + boxH + 26 * u, '', u, 11);
+    this.hudMute = boldText(this, W - m - 13 * u, y0 + boxH + 16 * u, isMuted() ? '🔇' : '🔊', u, 18);
+    this.hudMute.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.toggleMute());
 
-    this.hud = this.add.container(0, 0, [g, this.hudStage, this.hudTime, this.hudCoinIcon, this.hudCoins, this.hudProgress, this.hudRemain]).setDepth(20);
+    this.hud = this.add.container(0, 0, [g, this.hudStage, this.hudTime, this.hudCoinIcon, this.hudCoins, this.hudProgress, this.hudRemain, this.hudMute]).setDepth(20);
   }
 
   private updateHud(): void {
@@ -258,13 +314,20 @@ export class PlayScene extends Phaser.Scene {
 
     const m = 8 * u;
     const y = 8 * u + 30 * u + 6 * u;
-    const w = this.L.width - m * 2;
+    const w = this.L.width - m * 2 - 34 * u; // 오른쪽은 음소거 버튼 자리
     const h = 9 * u;
     const ratio = r.broken / r.cfg.totalPigs;
     this.hudProgress.clear();
     this.hudProgress.fillStyle(0x0d1b3e, 1).fillRoundedRect(m, y, w, h, h / 2);
     if (ratio > 0) this.hudProgress.fillStyle(0xff4f8b, 1).fillRoundedRect(m, y, Math.max(h, w * ratio), h, h / 2);
     this.hudProgress.lineStyle(2 * u, 0x000000, 1).strokeRoundedRect(m, y, w, h, h / 2);
+  }
+
+  private toggleMute(): void {
+    const muted = !isMuted();
+    setMuted(muted);
+    setSave({ ...getSave(), muted });
+    this.hudMute.setText(muted ? '🔇' : '🔊');
   }
 
   private fitBackground(): void {
@@ -286,6 +349,7 @@ export class PlayScene extends Phaser.Scene {
       p.y = c.y;
       const key = p.kind === 'gold' ? 'pig-gold' : 'pig-normal';
       p.sprite.setDisplaySize(ART_SIZE[key] * this.L.unit, ART_SIZE[key] * this.L.unit);
+      p.sprite.setData('sx', p.sprite.scaleX).setData('sy', p.sprite.scaleY);
     }
   }
 }
