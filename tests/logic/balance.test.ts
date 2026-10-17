@@ -40,3 +40,18 @@ describe('stageConfig', () => {
     expect(stageConfig(0).stage).toBe(1);
   });
 });
+
+describe('every stage can be cleared', () => {
+  it('enough pigs can spawn within the time limit, with margin, up to stage 500', () => {
+    for (let s = 1; s <= 500; s++) {
+      const c = stageConfig(s);
+      const capacity = c.maxOnScreen + c.timeLimit / c.spawnInterval;
+      expect(capacity, `stage ${s}`).toBeGreaterThanOrEqual(c.totalPigs * 1.3);
+    }
+  });
+  it('spawning speeds up as stages rise but never below 0.1s', () => {
+    expect(stageConfig(1).spawnInterval).toBe(0.35);
+    expect(stageConfig(20).spawnInterval).toBeLessThan(stageConfig(10).spawnInterval);
+    expect(stageConfig(500).spawnInterval).toBe(0.1);
+  });
+});
