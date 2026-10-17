@@ -19,7 +19,7 @@ export default defineConfig({
         start_url: './',
         scope: './',
       },
-      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'], maximumFileSizeToCacheInBytes: 4 * 1024 * 1024 },
+      workbox: { globPatterns: ['**/*.{js,css,html,svg,png,ico}'] /* manifest는 플러그인이 직접 넣는다(중복되면 SW 설치 실패) */, maximumFileSizeToCacheInBytes: 4 * 1024 * 1024 },
     }),
   ],
   test: { include: ['tests/**/*.test.ts'] },
