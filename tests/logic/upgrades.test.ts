@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { hammerStats, nextCost, canBuy, describeUpgrade, START_LEVELS } from '../../src/logic/upgrades';
+import { hammerStats, hammerScale, nextCost, canBuy, describeUpgrade, START_LEVELS } from '../../src/logic/upgrades';
 
 describe('hammerStats', () => {
   it('starting hammer', () => {
@@ -47,5 +47,15 @@ describe('describeUpgrade', () => {
     expect(describeUpgrade('speed', 1)).toEqual({ now: '초당 5.0회', next: '초당 5.4회' });
     expect(describeUpgrade('area', 0)).toEqual({ now: '잠김', next: '반경 42' });
     expect(describeUpgrade('chain', 0)).toEqual({ now: '잠김', next: '2회' });
+  });
+});
+
+describe('hammerScale', () => {
+  it('grows 15% per area level and caps at 2x', () => {
+    expect(hammerScale(0)).toBe(1);
+    expect(hammerScale(1)).toBeCloseTo(1.15);
+    expect(hammerScale(3)).toBeCloseTo(1.45);
+    expect(hammerScale(7)).toBe(2);
+    expect(hammerScale(50)).toBe(2);
   });
 });

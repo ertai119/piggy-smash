@@ -95,3 +95,11 @@ export function describeUpgrade(skill: SkillId, level: number): { now: string; n
     next: effectText(skill, level + 1),
   };
 }
+
+const HAMMER_GROWTH = 0.15;
+const HAMMER_MAX_SCALE = 2;
+
+/** 범위 공격 레벨에 따른 망치·충격 별의 그림 크기 배율. 판정에는 영향 없음. */
+export function hammerScale(areaLevel: number): number {
+  return Math.min(HAMMER_MAX_SCALE, 1 + HAMMER_GROWTH * Math.max(0, areaLevel));
+}

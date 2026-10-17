@@ -11,7 +11,7 @@ import { resolveTap, SwingGate, type TapResult, type Target } from '../logic/com
 import { formatNumber } from '../logic/format';
 import { clampToArena, PIG_RADIUS, PIG_RADIUS_GOLD, type Layout } from '../logic/layout';
 import { StageRun, type SpawnRequest } from '../logic/stageRun';
-import { hammerStats, type HammerStats } from '../logic/upgrades';
+import { hammerScale, hammerStats, type HammerStats } from '../logic/upgrades';
 
 export interface ResultData {
   stage: number;
@@ -42,6 +42,8 @@ export class PlayScene extends Phaser.Scene {
   protected L!: Layout;
   protected run!: StageRun;
   protected stats!: HammerStats;
+  /** 범위 공격 레벨만큼 망치를 크게 그린다 */
+  protected hammerSize = 1;
   protected pigs = new Map<number, Pig>();
   /** 화면 동전 카운터에 이미 더해진 이번 판 동전 */
   protected shownCoins = 0;
@@ -74,6 +76,7 @@ export class PlayScene extends Phaser.Scene {
     this.ending = false;
     this.L = gameLayout(this);
     this.stats = hammerStats(getSave().levels);
+    this.hammerSize = hammerScale(getSave().levels.area);
     this.gate = new SwingGate(this.stats.minIntervalMs);
     this.run = new StageRun(stageConfig(data?.stage ?? getSave().stage), Math.random);
 
@@ -112,7 +115,7 @@ export class PlayScene extends Phaser.Scene {
 
   // ---- 연출 ----
   protected onSwing(tap: { x: number; y: number }): void {
-    swingHammer(this, tap, this.L.unit, Math.min(110, this.stats.minIntervalMs * 0.6));
+    swingHammer(this, tap, this.L.unit, Math.min(110, this.stats.minIntervalMs * 0.6), this.hammerSize);
     play('swing');
   }
 
@@ -121,7 +124,7 @@ export class PlayScene extends Phaser.Scene {
     const u = this.L.unit;
     // 망치가 닿는 순간에 맞춰 반응
     this.time.delayedCall(Math.min(110, this.stats.minIntervalMs * 0.6) * 0.8, () => {
-      impactBurst(this, tap, u, result.crit);
+      impactBurst(this, tap, u, result.crit, this.hammerSize);
       for (const h of result.hits) {
         const p = this.pigs.get(h.id);
         const at = p ?? this.lastBroken.get(h.id);

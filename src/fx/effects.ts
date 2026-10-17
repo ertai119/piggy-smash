@@ -11,11 +11,11 @@ const shards: Phaser.GameObjects.Image[] = [];
 
 type P = { x: number; y: number };
 
-/** 망치가 들렸다가 터치점으로 내려꽂힌다. 손잡이 끝이 회전 중심. */
-export function swingHammer(scene: Phaser.Scene, tap: P, unit: number, durationMs: number): void {
-  const size = ART_SIZE.hammer * unit * 1.35;
+/** 망치가 들렸다가 터치점으로 내려꽂힌다. 손잡이 끝이 회전 중심. scale이 커져도 머리가 터치점에 떨어진다. */
+export function swingHammer(scene: Phaser.Scene, tap: P, unit: number, durationMs: number, scale = 1): void {
+  const size = ART_SIZE.hammer * unit * 1.35 * scale;
   const h = scene.add
-    .image(tap.x + 42 * unit, tap.y + 34 * unit, 'hammer')
+    .image(tap.x + 42 * unit * scale, tap.y + 34 * unit * scale, 'hammer')
     .setDisplaySize(size, size)
     .setOrigin(0.5, 0.94)
     .setAngle(25)
@@ -32,8 +32,8 @@ export function swingHammer(scene: Phaser.Scene, tap: P, unit: number, durationM
 }
 
 /** 터치점의 충격 별 */
-export function impactBurst(scene: Phaser.Scene, at: P, unit: number, big: boolean): void {
-  const base = ART_SIZE.burst * unit * (big ? 1.25 : 0.9);
+export function impactBurst(scene: Phaser.Scene, at: P, unit: number, big: boolean, scale = 1): void {
+  const base = ART_SIZE.burst * unit * (big ? 1.25 : 0.9) * scale;
   const b = scene.add.image(at.x, at.y, 'burst').setDisplaySize(base, base).setDepth(25);
   const s = b.scaleX;
   b.setScale(s * 0.6).setAngle(Phaser.Math.Between(0, 30));
