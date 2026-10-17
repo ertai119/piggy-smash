@@ -5,6 +5,7 @@ import { bump, breakPig as breakFx, coinBurstToCounter, damageNumber, hitFlash, 
 import { vibrate } from '../fx/haptics';
 import { isMuted, play, setMuted } from '../fx/sound';
 import { getSave, setSave } from '../game/state';
+import { applyResult } from '../logic/save';
 import { stageConfig, type PigKind } from '../logic/balance';
 import { resolveTap, SwingGate, type TapResult, type Target } from '../logic/combat';
 import { formatNumber } from '../logic/format';
@@ -268,9 +269,9 @@ export class PlayScene extends Phaser.Scene {
       timeLeft: r.timeLeft,
       remaining: r.remaining,
     };
-    this.time.delayedCall(END_DELAY_MS, () => {
-      this.scene.start(this.scene.get('result') ? 'result' : 'title', data);
-    });
+    // 결과 화면이 뜨기 전에 저장한다(그 사이 앱을 꺼도 진행이 남도록)
+    setSave(applyResult(getSave(), data));
+    this.time.delayedCall(END_DELAY_MS, () => this.scene.start('result', data));
   }
 
   // ---- HUD ----

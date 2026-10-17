@@ -62,3 +62,12 @@ export function buySkill(data: SaveData, skill: SkillId): SaveData {
     levels: { ...data.levels, [skill]: level + 1 },
   };
 }
+
+/** 판이 끝났을 때 저장에 반영한다. 동전은 성공·실패와 관계없이 더하고, 클리어면 다음 스테이지로. */
+export function applyResult(data: SaveData, result: { stage: number; cleared: boolean; coinsEarned: number }): SaveData {
+  return {
+    ...data,
+    coins: data.coins + result.coinsEarned,
+    stage: result.cleared ? Math.max(data.stage, result.stage + 1) : data.stage,
+  };
+}
