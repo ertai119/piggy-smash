@@ -38,6 +38,12 @@ export function computeLayout(width: number, height: number): Layout {
   };
 }
 
+/** CSS 픽셀 기준 레이아웃을 k배(기기 픽셀 비율) 키운다. */
+export function scaleLayout(l: Layout, k: number): Layout {
+  const r = (rect: Rect): Rect => ({ x: rect.x * k, y: rect.y * k, w: rect.w * k, h: rect.h * k });
+  return { width: l.width * k, height: l.height * k, unit: l.unit * k, hud: r(l.hud), arena: r(l.arena) };
+}
+
 /** 반지름 r인 원 전체가 경기장 안에 들도록 중심을 옮긴다. */
 export function clampToArena(p: { x: number; y: number }, r: number, arena: Rect): { x: number; y: number } {
   const clamp = (v: number, lo: number, hi: number) => (lo > hi ? (lo + hi) / 2 : Math.min(hi, Math.max(lo, v)));

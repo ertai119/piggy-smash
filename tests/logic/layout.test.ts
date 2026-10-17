@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { computeLayout, clampToArena } from '../../src/logic/layout';
+import { computeLayout, clampToArena, scaleLayout } from '../../src/logic/layout';
 
 describe('computeLayout', () => {
   it('reference phone', () => {
@@ -32,5 +32,15 @@ describe('clampToArena', () => {
   });
   it('leaves inside points alone', () => {
     expect(clampToArena({ x: 100, y: 300 }, 21, arena)).toEqual({ x: 100, y: 300 });
+  });
+});
+
+describe('scaleLayout', () => {
+  it('converts a CSS-pixel layout to device pixels', () => {
+    const l = scaleLayout(computeLayout(390, 760), 2.5);
+    expect(l.width).toBe(975);
+    expect(l.unit).toBe(2.5);
+    expect(l.hud).toEqual({ x: 0, y: 0, w: 975, h: 180 });
+    expect(l.arena).toEqual({ x: 20, y: 200, w: 935, h: 1680 });
   });
 });
