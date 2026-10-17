@@ -5,6 +5,8 @@ import { getSave } from '../game/state';
 import { formatNumber } from '../logic/format';
 import type { ResultData } from './PlayScene';
 
+const BUTTON_LOCK_MS = 500;
+
 /** 결과 화면(시안 ②). 저장은 PlayScene이 판이 끝나는 순간 이미 했다. */
 export class ResultScene extends Phaser.Scene {
   private data_!: ResultData;
@@ -56,8 +58,13 @@ export class ResultScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     const bw = cw - 50 * u;
-    button(this, cx, top + 216 * u, bw, 40 * u, '강화하러 가기', u, 0x76ff03, () => this.scene.start('upgrade'), 17);
-    button(this, cx, top + 264 * u, bw, 38 * u, data.cleared ? '다음 스테이지 ▶' : '다시 도전 ▶', u, 0xffca28, () => this.scene.start('play', { stage: getSave().stage }), 16);
+    const buttons = [
+      button(this, cx, top + 216 * u, bw, 40 * u, '강화하러 가기', u, 0x76ff03, () => this.scene.start('upgrade'), 17),
+      button(this, cx, top + 264 * u, bw, 38 * u, data.cleared ? '다음 스테이지 ▶' : '다시 도전 ▶', u, 0xffca28, () => this.scene.start('play', { stage: getSave().stage }), 16),
+    ];
+    // 시간이 끝날 때 연타하던 손가락이 버튼을 바로 누르지 않도록 잠깐 막는다
+    for (const b of buttons) b.disableInteractive().setAlpha(0.6);
+    this.time.delayedCall(BUTTON_LOCK_MS, () => buttons.forEach((b) => b.setInteractive().setAlpha(1)));
 
     const onResize = () => this.scene.restart(this.data_);
     this.scale.on('resize', onResize);

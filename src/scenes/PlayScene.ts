@@ -3,7 +3,7 @@ import { ART_SIZE } from '../art/textures';
 import { boldText, gameLayout } from '../display';
 import { bump, breakPig as breakFx, coinBurstToCounter, damageNumber, hitFlash, impactBurst, lightning, resetEffects, shake, swingHammer } from '../fx/effects';
 import { vibrate } from '../fx/haptics';
-import { isMuted, play, setMuted } from '../fx/sound';
+import { isMuted, play, setMuted, unlock } from '../fx/sound';
 import { getSave, setSave } from '../game/state';
 import { applyResult } from '../logic/save';
 import { stageConfig, type PigKind } from '../logic/balance';
@@ -231,6 +231,8 @@ export class PlayScene extends Phaser.Scene {
 
   // ---- 입력과 타격 ----
   private onPointerDown(pointer: Phaser.Input.Pointer): void {
+    // 안드로이드가 백그라운드에서 오디오를 멈췄을 수 있으니 터치마다 다시 깨운다(이미 켜져 있으면 아무 일도 없음)
+    unlock();
     if (this.ending || pointer.y < this.L.hud.h) return;
     if (!this.gate.trySwing(this.time.now)) return;
     const tap = { x: pointer.x, y: pointer.y };
