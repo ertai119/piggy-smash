@@ -1,0 +1,139 @@
+<h2>어떤 느낌의 게임이 좋으세요?</h2>
+<p class="subtitle">같은 장면(저금통 3개, 망치, 튀어나온 동전, 타이머)을 세 가지 그림체로 그려봤어요. 마음에 드는 걸 눌러주세요.</p>
+
+<div class="cards">
+
+  <!-- A. 파스텔 카툰 -->
+  <div class="card" data-choice="cartoon" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#fff3f6;display:flex;justify-content:center;padding:16px">
+      <svg viewBox="0 0 180 320" width="180" height="320" style="border-radius:18px;background:linear-gradient(#ffe9f0,#fdf6e3);box-shadow:0 2px 8px rgba(0,0,0,.15)">
+        <rect x="10" y="12" width="70" height="20" rx="10" fill="#fff" stroke="#f3a6bd"/>
+        <text x="45" y="27" font-size="11" text-anchor="middle" fill="#d96b8f" font-family="sans-serif">⏱ 0:24</text>
+        <rect x="100" y="12" width="70" height="20" rx="10" fill="#fff" stroke="#f2c94c"/>
+        <circle cx="113" cy="22" r="6" fill="#f2c94c"/>
+        <text x="148" y="27" font-size="11" text-anchor="middle" fill="#b8860b" font-family="sans-serif">1,240</text>
+        <g transform="translate(45,110)">
+          <ellipse cx="0" cy="0" rx="28" ry="22" fill="#f9b8c9"/>
+          <ellipse cx="22" cy="2" rx="9" ry="7" fill="#f48fb1"/>
+          <circle cx="20" cy="1" r="1.5" fill="#c2185b"/><circle cx="25" cy="1" r="1.5" fill="#c2185b"/>
+          <circle cx="10" cy="-8" r="2.5" fill="#5d4037"/>
+          <path d="M-8,-22 l6,-8 l4,8z" fill="#f48fb1"/>
+          <rect x="-8" y="-22" width="12" height="3" rx="1.5" fill="#c2185b"/>
+          <rect x="-18" y="18" width="6" height="8" rx="2" fill="#f48fb1"/><rect x="8" y="18" width="6" height="8" rx="2" fill="#f48fb1"/>
+          <rect x="-24" y="-34" width="48" height="5" rx="2.5" fill="#fff"/><rect x="-24" y="-34" width="30" height="5" rx="2.5" fill="#7bd389"/>
+        </g>
+        <g transform="translate(130,180)">
+          <ellipse cx="0" cy="0" rx="28" ry="22" fill="#b8e0f9"/>
+          <ellipse cx="22" cy="2" rx="9" ry="7" fill="#8fc9f4"/>
+          <circle cx="10" cy="-8" r="2.5" fill="#5d4037"/>
+          <rect x="-24" y="-34" width="48" height="5" rx="2.5" fill="#fff"/><rect x="-24" y="-34" width="44" height="5" rx="2.5" fill="#7bd389"/>
+        </g>
+        <!-- 깨지는 저금통 + 망치 -->
+        <g transform="translate(70,250)">
+          <path d="M-26,0 a28,22 0 0 1 24,-21 l-4,10 l6,6z" fill="#f9b8c9"/>
+          <path d="M4,-21 a28,22 0 0 1 22,21 l-14,4 l-6,-8z" fill="#f9b8c9"/>
+          <path d="M-26,4 a28,22 0 0 0 52,0z" fill="#f9b8c9"/>
+          <circle cx="-30" cy="-30" r="6" fill="#f2c94c" stroke="#d4a017"/>
+          <circle cx="28" cy="-38" r="6" fill="#f2c94c" stroke="#d4a017"/>
+          <circle cx="40" cy="-14" r="6" fill="#f2c94c" stroke="#d4a017"/>
+          <text x="0" y="-34" font-size="14" text-anchor="middle" fill="#ff7043" font-family="sans-serif" font-weight="bold">-35!</text>
+        </g>
+        <g transform="translate(95,205) rotate(-35)">
+          <rect x="-3" y="0" width="6" height="40" rx="3" fill="#a1887f"/>
+          <rect x="-16" y="-12" width="32" height="16" rx="6" fill="#ffb74d"/>
+        </g>
+      </svg>
+    </div>
+    <div class="card-body">
+      <h3>A. 파스텔 카툰</h3>
+      <p>둥글고 귀여운 저금통, 부드러운 색. 아기자기하고 편안한 느낌이에요.</p>
+    </div>
+  </div>
+
+  <!-- B. 픽셀 아트 -->
+  <div class="card" data-choice="pixel" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#1b1b2f;display:flex;justify-content:center;padding:16px">
+      <svg viewBox="0 0 180 320" width="180" height="320" shape-rendering="crispEdges" style="background:#2b2d42;box-shadow:0 2px 8px rgba(0,0,0,.4)">
+        <rect x="0" y="0" width="180" height="40" fill="#1b1b2f"/>
+        <text x="10" y="26" font-size="12" fill="#ef476f" font-family="monospace" font-weight="bold">TIME 24</text>
+        <rect x="112" y="16" width="8" height="8" fill="#ffd166"/>
+        <text x="124" y="26" font-size="12" fill="#ffd166" font-family="monospace" font-weight="bold">1240</text>
+        <!-- 픽셀 돼지 1 -->
+        <g transform="translate(24,92)" fill="#ff8fab">
+          <rect x="8" y="0" width="32" height="4"/><rect x="4" y="4" width="40" height="24"/><rect x="8" y="28" width="32" height="4"/>
+          <rect x="44" y="12" width="8" height="8" fill="#fb6f92"/>
+          <rect x="32" y="8" width="4" height="4" fill="#1b1b2f"/>
+          <rect x="16" y="-4" width="12" height="4" fill="#1b1b2f"/>
+          <rect x="8" y="32" width="6" height="6"/><rect x="32" y="32" width="6" height="6"/>
+          <rect x="4" y="-14" width="40" height="4" fill="#1b1b2f"/><rect x="4" y="-14" width="24" height="4" fill="#06d6a0"/>
+        </g>
+        <!-- 픽셀 돼지 2 -->
+        <g transform="translate(110,160)" fill="#8ecae6">
+          <rect x="8" y="0" width="32" height="4"/><rect x="4" y="4" width="40" height="24"/><rect x="8" y="28" width="32" height="4"/>
+          <rect x="44" y="12" width="8" height="8" fill="#219ebc"/>
+          <rect x="32" y="8" width="4" height="4" fill="#1b1b2f"/>
+          <rect x="4" y="-14" width="40" height="4" fill="#1b1b2f"/><rect x="4" y="-14" width="36" height="4" fill="#06d6a0"/>
+        </g>
+        <!-- 깨지는 돼지 조각 + 동전 -->
+        <g transform="translate(50,240)" fill="#ff8fab">
+          <rect x="0" y="0" width="12" height="8"/><rect x="20" y="-6" width="10" height="10"/><rect x="38" y="2" width="12" height="8"/>
+          <rect x="8" y="12" width="30" height="8"/>
+          <rect x="-12" y="-24" width="8" height="8" fill="#ffd166"/><rect x="28" y="-34" width="8" height="8" fill="#ffd166"/><rect x="56" y="-16" width="8" height="8" fill="#ffd166"/>
+          <text x="10" y="-40" font-size="12" fill="#fff" font-family="monospace" font-weight="bold">-35</text>
+        </g>
+        <!-- 픽셀 망치 -->
+        <g transform="translate(92,196)">
+          <rect x="0" y="0" width="28" height="12" fill="#adb5bd"/><rect x="0" y="0" width="28" height="4" fill="#dee2e6"/>
+          <rect x="10" y="12" width="6" height="28" fill="#8d6e63"/>
+        </g>
+      </svg>
+    </div>
+    <div class="card-body">
+      <h3>B. 픽셀 아트</h3>
+      <p>도트 그래픽의 레트로 오락실 느낌. 숫자와 효과가 또렷하게 보여요.</p>
+    </div>
+  </div>
+
+  <!-- C. 선명한 캐주얼 -->
+  <div class="card" data-choice="bold" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#e3f2fd;display:flex;justify-content:center;padding:16px">
+      <svg viewBox="0 0 180 320" width="180" height="320" style="border-radius:18px;background:radial-gradient(circle at 50% 40%,#4fc3f7,#1565c0);box-shadow:0 2px 8px rgba(0,0,0,.3)">
+        <rect x="10" y="12" width="64" height="22" rx="6" fill="#0d1b3e" stroke="#000" stroke-width="2"/>
+        <text x="42" y="28" font-size="12" text-anchor="middle" fill="#fff" font-family="sans-serif" font-weight="900">⏱ 24</text>
+        <rect x="98" y="12" width="72" height="22" rx="6" fill="#0d1b3e" stroke="#000" stroke-width="2"/>
+        <circle cx="112" cy="23" r="7" fill="#ffca28" stroke="#000" stroke-width="2"/>
+        <text x="146" y="28" font-size="12" text-anchor="middle" fill="#ffca28" font-family="sans-serif" font-weight="900">1,240</text>
+        <g transform="translate(48,108)" stroke="#000" stroke-width="3">
+          <ellipse cx="0" cy="0" rx="30" ry="23" fill="#ff4f8b"/>
+          <ellipse cx="24" cy="2" rx="9" ry="8" fill="#ff80ab"/>
+          <circle cx="11" cy="-8" r="3" fill="#000" stroke="none"/>
+          <rect x="-26" y="-38" width="52" height="7" rx="3" fill="#333"/><rect x="-26" y="-38" width="30" height="7" rx="3" fill="#76ff03" stroke="none"/>
+        </g>
+        <g transform="translate(132,182)" stroke="#000" stroke-width="3">
+          <ellipse cx="0" cy="0" rx="30" ry="23" fill="#ffd54f"/>
+          <ellipse cx="24" cy="2" rx="9" ry="8" fill="#ffe082"/>
+          <circle cx="11" cy="-8" r="3" fill="#000" stroke="none"/>
+          <rect x="-26" y="-38" width="52" height="7" rx="3" fill="#333"/><rect x="-26" y="-38" width="48" height="7" rx="3" fill="#76ff03" stroke="none"/>
+        </g>
+        <!-- 폭발 + 번개 -->
+        <g transform="translate(70,252)">
+          <polygon points="0,-34 8,-12 30,-18 14,0 30,16 6,10 0,32 -6,10 -30,16 -14,0 -30,-18 -8,-12" fill="#fff59d" stroke="#000" stroke-width="2"/>
+          <circle cx="-34" cy="-26" r="7" fill="#ffca28" stroke="#000" stroke-width="2"/>
+          <circle cx="34" cy="-36" r="7" fill="#ffca28" stroke="#000" stroke-width="2"/>
+          <circle cx="44" cy="-6" r="7" fill="#ffca28" stroke="#000" stroke-width="2"/>
+          <text x="0" y="-40" font-size="16" text-anchor="middle" fill="#fff" stroke="#000" stroke-width="1" font-family="sans-serif" font-weight="900">CRIT 70!</text>
+        </g>
+        <polyline points="100,226 112,214 106,210 122,196" fill="none" stroke="#e1f5fe" stroke-width="3"/>
+        <g transform="translate(98,212) rotate(-30)" stroke="#000" stroke-width="2.5">
+          <rect x="-4" y="0" width="8" height="42" rx="3" fill="#8d6e63"/>
+          <rect x="-18" y="-14" width="36" height="18" rx="4" fill="#90a4ae"/>
+        </g>
+      </svg>
+    </div>
+    <div class="card-body">
+      <h3>C. 선명한 캐주얼</h3>
+      <p>굵은 테두리와 진한 색, 큼직한 타격 효과. 손맛이 강조되는 모바일 게임 느낌이에요.</p>
+    </div>
+  </div>
+
+</div>
