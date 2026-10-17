@@ -41,11 +41,13 @@ export function resolveTap(
   const hits: Hit[] = [];
   const chain: TapResult['chain'] = [];
 
+  // 망치 머리(원)가 저금통 원에 닿으면 직접 타격. 여럿이면 중심이 가장 가까운 것.
+  const head = stats.headRadius * unit;
   let direct: Target | undefined;
   let best = Infinity;
   for (const t of targets) {
     const d = dist(tap.x, tap.y, t.x, t.y);
-    if (d <= t.radius && d < best) {
+    if (d <= t.radius + head && d < best) {
       best = d;
       direct = t;
     }

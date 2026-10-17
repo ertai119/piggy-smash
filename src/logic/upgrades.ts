@@ -27,12 +27,16 @@ export interface HammerStats {
   chainJumps: number;
   chainRange: number;
   chainRatio: number;
+  /** 망치 머리가 닿는 반지름(단위). 망치 크기만큼 커진다. */
+  headRadius: number;
 }
 
 const AREA_RATIO = 0.5;
 const CRIT_MULTIPLIER = 3;
 const CHAIN_RANGE = 140;
 const CHAIN_RATIO = 0.6;
+/** 기본 망치(1배)에서 화면에 그려진 머리 크기 */
+const HEAD_RADIUS = 12;
 
 const damageAt = (l: number) => Math.round(10 * 1.25 ** (l - 1));
 const intervalAt = (l: number) => Math.max(80, Math.round(200 * 0.92 ** (l - 1)));
@@ -60,6 +64,7 @@ export function hammerStats(levels: SkillLevels): HammerStats {
     chainJumps: chainJumpsAt(levels.chain),
     chainRange: CHAIN_RANGE,
     chainRatio: CHAIN_RATIO,
+    headRadius: HEAD_RADIUS * hammerScale(levels.area),
   };
 }
 
@@ -99,7 +104,7 @@ export function describeUpgrade(skill: SkillId, level: number): { now: string; n
 const HAMMER_GROWTH = 0.15;
 const HAMMER_MAX_SCALE = 2;
 
-/** 범위 공격 레벨에 따른 망치·충격 별의 그림 크기 배율. 판정에는 영향 없음. */
+/** 범위 공격 레벨에 따른 망치 크기 배율. 그림과 머리 판정(headRadius)이 함께 커진다. */
 export function hammerScale(areaLevel: number): number {
   return Math.min(HAMMER_MAX_SCALE, 1 + HAMMER_GROWTH * Math.max(0, areaLevel));
 }

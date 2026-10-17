@@ -11,6 +11,14 @@ describe('resolveTap', () => {
     const r = resolveTap({ x: 15, y: 0 }, [T(1, 0, 0), T(2, 25, 0)], base, 1, never); // 거리 15 vs 10
     expect(r.hits).toEqual([{ id: 2, damage: 10, kind: 'direct', crit: false }]);
   });
+  it('the hammer head reaches past the pig edge, and further when bigger', () => {
+    const t = [T(1, 0, 0)]; // 반지름 20
+    expect(resolveTap({ x: 30, y: 0 }, t, base, 1, never).hits.map(h => h.id)).toEqual([1]); // 30 ≤ 20+12
+    expect(resolveTap({ x: 40, y: 0 }, t, base, 1, never).hits).toEqual([]);                // 40 > 20+12
+    const big = { ...base, headRadius: 24 };
+    expect(resolveTap({ x: 40, y: 0 }, t, big, 1, never).hits.map(h => h.id)).toEqual([1]);  // 40 ≤ 20+24
+    expect(resolveTap({ x: 40, y: 0 }, t, big, 0.5, never).hits).toEqual([]);              // 40 > 20+12
+  });
   it('misses cleanly', () => {
     expect(resolveTap({ x: 200, y: 200 }, [T(1, 0, 0)], base, 1, never).hits).toEqual([]);
   });

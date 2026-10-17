@@ -6,6 +6,7 @@ describe('hammerStats', () => {
     expect(hammerStats(START_LEVELS)).toEqual({
       damage: 10, minIntervalMs: 200, areaRadius: 0, areaRatio: 0.5,
       critChance: 0, critMultiplier: 3, chainJumps: 0, chainRange: 140, chainRatio: 0.6,
+      headRadius: 12,
     });
   });
   it('levels raise stats', () => {
@@ -57,5 +58,12 @@ describe('hammerScale', () => {
     expect(hammerScale(3)).toBeCloseTo(1.45);
     expect(hammerScale(7)).toBe(2);
     expect(hammerScale(50)).toBe(2);
+  });
+});
+
+describe('headRadius', () => {
+  it('grows with the hammer size from the area attack level', () => {
+    expect(hammerStats({ ...START_LEVELS, area: 1 }).headRadius).toBeCloseTo(13.8);
+    expect(hammerStats({ ...START_LEVELS, area: 7 }).headRadius).toBe(24);
   });
 });
