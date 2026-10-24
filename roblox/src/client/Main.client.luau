@@ -53,7 +53,8 @@ function playStage()
 	if not stage then
 		-- 서버가 아직 기록을 못 불러왔다: 잠깐 뒤 다시
 		task.wait(1)
-		return playStage()
+		playStage()
+		return
 	end
 	local hud
 	hud = Ui.showHud(function()

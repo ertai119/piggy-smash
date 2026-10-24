@@ -1,5 +1,10 @@
 --!strict
-local UNITS = { { 1e12, "T" }, { 1e9, "B" }, { 1e6, "M" }, { 1e3, "K" } }
+local UNITS: { { size: number, suffix: string } } = {
+	{ size = 1e12, suffix = "T" },
+	{ size = 1e9, suffix = "B" },
+	{ size = 1e6, suffix = "M" },
+	{ size = 1e3, suffix = "K" },
+}
 
 local Format = {}
 
@@ -25,8 +30,8 @@ function Format.number(n: number): string
 		return (string.format("%.1e", v):gsub("%+", ""))
 	end
 	for _, u in UNITS do
-		if v >= u[1] then
-			return string.format("%.1f%s", v / u[1], u[2])
+		if v >= u.size then
+			return string.format("%.1f%s", v / u.size, u.suffix)
 		end
 	end
 	return tostring(v)
