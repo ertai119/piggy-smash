@@ -1,0 +1,36 @@
+{
+  "name": "PiggySmash",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "PiggySmashServer": {
+        "$path": "src/server"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "PiggySmashClient": {
+          "$path": "src/client"
+        }
+      }
+    },
+    "Players": {
+      "$properties": {
+        "CharacterAutoLoads": false
+      }
+    },
+    "Lighting": {
+      "$properties": {
+        "Ambient": [0.55, 0.6, 0.75],
+        "Brightness": 2.5,
+        "ClockTime": 13,
+        "GlobalShadows": true
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+# 로블록스판 개발 도구. `rokit install` 로 한 번에 설치한다.
+[tools]
+rojo = "rojo-rbx/rojo@7.7.1"
+lune = "lune-org/lune@0.11.1"
+selene = "Kampfkarren/selene@0.31.0"
