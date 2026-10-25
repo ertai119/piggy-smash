@@ -3,13 +3,16 @@
 
 local Config = {}
 
--- 웹판 수치(픽셀)를 스터드로: 기준 폰 화면 390px ≈ 39스터드
-Config.STUDS_PER_PX = 0.1
+-- 웹판 수치(픽셀)를 스터드로. 캐릭터(키 약 5스터드)에 맞춰 저금통과 망치 판정이 넉넉하도록.
+Config.STUDS_PER_PX = 0.15
 
--- 저금통이 돌아다니는 바닥. 가로(X) × 세로(Z) 스터드. 웹판 경기장 넓이와 비슷하게.
-Config.ARENA_ORIGIN = Vector3.new(0, 50, 0)
-Config.ARENA_SIZE = Vector2.new(64, 40)
-Config.WALL_HEIGHT = 3
+-- 캐릭터와 저금통이 돌아다니는 마당. 가로(X) × 세로(Z) 스터드. ORIGIN은 바닥 윗면 가운데.
+Config.ARENA_ORIGIN = Vector3.new(0, 0, 0)
+Config.ARENA_SIZE = Vector2.new(96, 68)
+Config.WALL_HEIGHT = 8
+
+-- 저금통 그림 크기 = 판정 반지름 × 이 값(판정을 그림보다 조금 넉넉하게)
+Config.PIG_ART_RATIO = 0.75
 
 -- 저금통 반지름(픽셀). 웹판 layout.ts 와 같다.
 Config.PIG_RADIUS = 21
@@ -28,6 +31,7 @@ Config.COLORS = {
 	hammerHead = Color3.fromRGB(120, 144, 156),
 	hammerHandle = Color3.fromRGB(141, 85, 36),
 	burst = Color3.fromRGB(255, 235, 59),
+	grass = Color3.fromRGB(124, 179, 66),
 	bolt = Color3.fromRGB(128, 222, 234),
 	panel = Color3.fromRGB(13, 27, 62),
 	pink = Color3.fromRGB(255, 79, 139),

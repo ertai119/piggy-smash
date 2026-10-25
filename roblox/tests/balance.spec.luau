@@ -5,15 +5,15 @@ return function(load, t)
 		{ "stage 1 is crowded from the start", function()
 			local c = cfg(1)
 			t.eq({ c.totalPigs, c.maxOnScreen, c.pigHp, c.timeLimit, c.pigSpeed, c.coinsPerPig, c.goldChance, c.spawnInterval },
-				{ 20, 8, 30, 30, 40, 5, 0.08, 0.35 })
+				{ 20, 8, 30, 45, 40, 5, 0.08, 0.35 })
 		end },
 		{ "stage 10 values", function()
 			local c = cfg(10)
-			t.eq({ c.totalPigs, c.maxOnScreen, c.pigHp, c.timeLimit, c.pigSpeed, c.coinsPerPig }, { 56, 11, 133, 48, 67, 14 })
+			t.eq({ c.totalPigs, c.maxOnScreen, c.pigHp, c.timeLimit, c.pigSpeed, c.coinsPerPig }, { 56, 11, 133, 72, 67, 14 })
 		end },
 		{ "caps screen count, time and speed", function()
 			local c = cfg(100)
-			t.eq({ c.maxOnScreen, c.timeLimit, c.pigSpeed }, { 16, 60, 120 })
+			t.eq({ c.maxOnScreen, c.timeLimit, c.pigSpeed }, { 16, 90, 120 })
 		end },
 		{ "gets harder every stage and stays finite up to 300", function()
 			for s = 2, 300 do

@@ -1,5 +1,6 @@
 --!strict
--- 서버: 진행 저장, 강화 구매, 판 결과 검증. 판 자체(저금통·타격)는 각 클라이언트에서 돈다.
+-- 서버: 진행 저장, 강화 구매, 판 결과 검증, 캐릭터에게 망치 쥐여 주기.
+-- 판 자체(저금통·타격)는 각 클라이언트에서 돈다.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -11,6 +12,7 @@ local SaveData = require(Shared.SaveData)
 local Upgrades = require(Shared.Upgrades)
 
 local Arena = require(script.Parent.Arena)
+local Character = require(script.Parent.Character)
 local SaveStore = require(script.Parent.SaveStore)
 
 local AUTOSAVE_SECONDS = 60
@@ -20,12 +22,33 @@ local runs: { [Player]: ActiveRun } = {}
 
 Arena.build()
 
-Players.PlayerAdded:Connect(SaveStore.load)
+local function onCharacter(player: Player, character: Model)
+	-- 기록을 불러온 뒤에야 망치 크기를 안다
+	local data = SaveStore.waitFor(player)
+	if not data or player.Character ~= character then
+		return
+	end
+	character:WaitForChild("HumanoidRootPart", 10)
+	Character.equip(player, data.levels.area)
+end
+
+local function onPlayer(player: Player)
+	player.CharacterAdded:Connect(function(character)
+		onCharacter(player, character)
+	end)
+	if player.Character then
+		task.spawn(onCharacter, player, player.Character)
+	end
+	SaveStore.load(player)
+end
+
+Players.PlayerAdded:Connect(onPlayer)
 for _, p in Players:GetPlayers() do
-	task.spawn(SaveStore.load, p)
+	task.spawn(onPlayer, p)
 end
 Players.PlayerRemoving:Connect(function(player)
 	runs[player] = nil
+	Character.forget(player)
 	SaveStore.release(player)
 end)
 game:BindToClose(SaveStore.flushAll)
@@ -83,6 +106,10 @@ Net.get("BuySkill").OnServerInvoke = function(player, skill: unknown)
 	local next = SaveData.buySkill(data, skill :: Upgrades.SkillId)
 	if next ~= data then
 		SaveStore.set(player, next)
+		if skill == "area" then
+			-- 망치가 커지면 캐릭터도 함께 커진다
+			task.spawn(Character.equip, player, next.levels.area)
+		end
 	end
 	return next
 end

@@ -1,6 +1,7 @@
 --!strict
 -- 스테이지 난이도와 경제 곡선. 밸런스 조정은 이 파일의 상수만 바꾼다.
 -- 웹판 src/logic/balance.ts 와 같은 수치. 거리·속도는 "픽셀" 단위이며 Config.STUDS_PER_PX 로 스터드로 바꾼다.
+-- 로블록스판은 캐릭터가 걸어가서 때리므로 제한 시간만 TIME_SCALE 배로 늘린다.
 
 export type PigKind = "normal" | "gold"
 
@@ -41,6 +42,8 @@ local SPAWN_SHRINK = 0.96
 local SPAWN_MIN = 0.1
 -- 모든 저금통이 나오는 데 걸리는 시간의 이 배수만큼은 제한 시간을 보장한다(높은 스테이지도 깰 수 있게)
 local TIME_SPAWN_MARGIN = 1.5
+-- 걸어 다니며 때리는 만큼 터치판보다 시간을 더 준다
+local TIME_SCALE = 1.5
 
 local function round(v: number): number
 	return math.floor(v + 0.5)
@@ -65,7 +68,7 @@ function Balance.stageConfig(stage: number?): StageConfig
 		totalPigs = totalPigs,
 		maxOnScreen = maxOnScreen,
 		pigHp = round(HP_BASE * HP_GROWTH ^ n),
-		timeLimit = math.max(math.min(TIME_BASE + TIME_PER_STAGE * n, TIME_MAX), spawnTime),
+		timeLimit = math.ceil(math.max(math.min(TIME_BASE + TIME_PER_STAGE * n, TIME_MAX), spawnTime) * TIME_SCALE),
 		pigSpeed = math.min(SPEED_BASE + SPEED_PER_STAGE * n, SPEED_MAX),
 		coinsPerPig = round(COINS_BASE * COINS_GROWTH ^ n),
 		goldChance = GOLD_CHANCE,
