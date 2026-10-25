@@ -64,7 +64,7 @@ return function(load, t)
 			local r = StageRun.new(Balance.stageConfig(1), noGold)
 			r:start()
 			r:update(30)
-			t.near(r.timeLeft, 30 - StageRun.MAX_DT)
+			t.near(r.timeLeft, 45 - StageRun.MAX_DT)
 			t.eq(r.status, "playing")
 		end },
 		{ "combo resets after 1.5s without hits", function()

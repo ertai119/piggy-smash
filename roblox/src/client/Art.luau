@@ -3,6 +3,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage.Shared.Config)
+local HammerTool = require(ReplicatedStorage.Shared.HammerTool)
 
 local C = Config.COLORS
 local Art = {}
@@ -130,33 +131,29 @@ function Art.flash(art: PigArt, on: boolean)
 	end
 end
 
-export type HammerArt = { model: Model, handle: Part, head: Part, length: number }
+export type HammerArt = { model: Model, handle: Part, head: Part, bands: { Part }, length: number, scale: number }
 
--- 손잡이 끝(잡는 곳)이 기준점, 머리가 -Z 쪽 끝에 붙는다
+-- 휘두르는 연출용 망치(손에 든 HammerTool 과 같은 크기). 손잡이 끝(잡는 곳)이 기준점, 머리가 -Z 쪽 끝에 붙는다.
 function Art.hammer(scale: number): HammerArt
 	local model = Instance.new("Model")
-	model.Name = "Hammer"
-	local len = 5 * scale
-	local handle = newPart(model, Enum.PartType.Cylinder, Vector3.new(len, 0.55 * scale, 0.55 * scale), CFrame.new(), C.hammerHandle, Enum.Material.Wood)
-	local head = newPart(model, Enum.PartType.Cylinder, Vector3.new(2.6 * scale, 1.7 * scale, 1.7 * scale), CFrame.new(), C.hammerHead, Enum.Material.Metal)
-	-- 머리 양쪽 금속 띠
-	for _, side in { -1, 1 } do
-		local band = newPart(model, Enum.PartType.Cylinder, Vector3.new(0.3 * scale, 1.85 * scale, 1.85 * scale), CFrame.new(), C.black)
-		band.Name = if side < 0 then "BandA" else "BandB"
+	model.Name = "SwingHammer"
+	local len = HammerTool.LENGTH * scale
+	local handle = newPart(model, Enum.PartType.Cylinder, Vector3.new(len, 0.45 * scale, 0.45 * scale), CFrame.new(), C.hammerHandle, Enum.Material.Wood)
+	local head = newPart(model, Enum.PartType.Cylinder, Vector3.new(2.4, 1.5, 1.5) * scale, CFrame.new(), C.hammerHead, Enum.Material.Metal)
+	local bands = {}
+	for _ = 1, 2 do
+		table.insert(bands, newPart(model, Enum.PartType.Cylinder, Vector3.new(0.25, 1.65, 1.65) * scale, CFrame.new(), C.black))
 	end
-	return { model = model, handle = handle, head = head, length = len }
+	return { model = model, handle = handle, head = head, bands = bands, length = len, scale = scale }
 end
 
 -- grip: 손잡이 끝 CFrame. 손잡이는 grip의 -Z로 뻗고, 머리 원기둥은 grip의 Y축을 따라 선다.
 function Art.poseHammer(h: HammerArt, grip: CFrame)
-	local s = h.head.Size.Y / 1.7
 	h.handle.CFrame = grip * CFrame.new(0, 0, -h.length / 2) * FORWARD
 	local headCf = grip * CFrame.new(0, 0, -h.length) * UPRIGHT
 	h.head.CFrame = headCf
-	local a = h.model:FindFirstChild("BandA") :: BasePart
-	local b = h.model:FindFirstChild("BandB") :: BasePart
-	a.CFrame = headCf * CFrame.new(-0.95 * s, 0, 0)
-	b.CFrame = headCf * CFrame.new(0.95 * s, 0, 0)
+	h.bands[1].CFrame = headCf * CFrame.new(-0.9 * h.scale, 0, 0)
+	h.bands[2].CFrame = headCf * CFrame.new(0.9 * h.scale, 0, 0)
 end
 
 function Art.coin(size: number): Part

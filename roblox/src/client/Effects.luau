@@ -26,24 +26,23 @@ local function fxPart(shape: Enum.PartType, size: Vector3, cf: CFrame, color: Co
 	return p
 end
 
--- 망치가 들렸다가 탭 지점으로 내려꽂힌다. 손잡이 끝이 회전 중심.
-function Effects.swingHammer(tap: Vector3, duration: number, scale: number)
+-- 캐릭터 어깨(grip)에서 망치를 머리 위로 들었다가 앞(look)으로 내려꽂는다.
+-- downAngle: 다 내려쳤을 때 손잡이가 수평에서 아래로 기운 각(라디안, 음수).
+function Effects.swingHammer(grip: Vector3, look: Vector3, downAngle: number, duration: number, scale: number)
 	local h = Art.hammer(scale)
 	h.model.Parent = fx
-	local yaw = math.rad(28)
-	local back = CFrame.Angles(0, yaw, 0):VectorToWorldSpace(Vector3.new(0, 0, h.length))
-	local grip = tap + back + Vector3.new(0, 1.3 * scale, 0)
+	local base = CFrame.lookAt(grip, grip + look)
 	local function pose(angle: number)
-		Art.poseHammer(h, CFrame.new(grip) * CFrame.Angles(0, yaw, 0) * CFrame.Angles(angle, 0, 0))
+		Art.poseHammer(h, base * CFrame.Angles(angle, 0, 0))
 	end
-	local up, down = math.rad(80), math.rad(-4)
+	local up = math.rad(115)
 	pose(up)
 	Anim.run(duration, function(t)
-		pose(up + (down - up) * E.quadIn(t))
+		pose(up + (downAngle - up) * E.quadIn(t))
 	end, function()
 		local parts = h.model:GetDescendants()
-		Anim.run(0.09, function(t)
-			pose(down + math.rad(12) * t)
+		Anim.run(0.1, function(t)
+			pose(downAngle + math.rad(10) * t)
 			for _, p in parts do
 				if p:IsA("BasePart") then
 					p.Transparency = t
@@ -51,11 +50,11 @@ function Effects.swingHammer(tap: Vector3, duration: number, scale: number)
 			end
 		end, function()
 			h.model:Destroy()
-		end, 0.04)
+		end, 0.05)
 	end)
 end
 
--- 탭 지점의 노란 충격 별
+-- 망치가 떨어진 자리의 노란 충격 별
 function Effects.impactBurst(at: Vector3, big: boolean, scale: number)
 	local d = 3.6 * scale * (if big then 1.25 else 0.9)
 	local center = CFrame.new(at + Vector3.new(0, 0.1, 0)) * CFrame.Angles(0, math.random() * math.pi, 0)
